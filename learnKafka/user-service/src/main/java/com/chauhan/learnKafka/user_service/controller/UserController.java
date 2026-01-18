@@ -1,5 +1,7 @@
 package com.chauhan.learnKafka.user_service.controller;
 
+import com.chauhan.learnKafka.user_service.dto.CreateUserRequestDto;
+import com.chauhan.learnKafka.user_service.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +18,8 @@ public class UserController {
     @Value("${kafka.topic.user-random-topic}")
     private String KAFKA_RANDOM_USER_TOPIC;
 
+    private final UserService userService;
+
     private final KafkaTemplate<String, String> kafkaTemplate;
 
     @PostMapping("/{message}")
@@ -25,6 +29,12 @@ public class UserController {
         }
 //        kafkaTemplate.send(KAFKA_RANDOM_USER_TOPIC,message);
         return ResponseEntity.ok("Message queued");
+    }
+
+    @PostMapping
+    public ResponseEntity<String> createUser(@RequestBody CreateUserRequestDto createUserRequestDto) {
+        userService.createUser(createUserRequestDto);
+        return ResponseEntity.ok("User is created");
     }
 
 }
